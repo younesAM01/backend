@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { PORT } from "./config/env.js";
 import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
@@ -14,7 +15,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
+app.use(
+  cors({
+    origin: "http://localhost:3000", // your Next.js domain
+    credentials: true,
+  })
+);
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/packs", packRouter);
@@ -27,7 +33,6 @@ app.use(errorHandler);
 app.get("/", (req, res) => {
   res.send("Backend is running");
 });
-
 
 app.listen(PORT, async () => {
   console.log(`Server Backend is running on http://localhost:${PORT}`);

@@ -31,12 +31,10 @@ const ClientPackSchema = new mongoose.Schema({
     type: String,
     enum: ['completed', 'pending' , 'cancelled'],
     default: 'pending',
-    required: [true, "Purchase state is required"]
   },
   isActive: {
     type: Boolean,
     default: true,
-    required: [true, "Is active is required"]
   },
   daysBeforeExpiring: {
     type: Number,
