@@ -58,8 +58,14 @@ export const signin = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      const error = new Error("User not found");
+      const error = new Error("Invalid email or password");
       error.statusCode = 404;
+      throw error;
+    }
+
+    if (!user.isEmailConfirmed) {
+      const error = new Error("Please Confirm your email before Sign In");
+      error.statusCode = 403;
       throw error;
     }
 
@@ -74,6 +80,14 @@ export const signin = async (req, res, next) => {
       expiresIn: JWT_EXPIRES_IN,
     });
 
+     // ✅ Set token in an httpOnly cookie
+     res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // true if using HTTPS
+      sameSite: 'Lax',
+      maxAge: 3600000, // 1 hour in ms
+    });
+      
     res.status(200).json({
       success: true,
       message: "User Sign in successfully",
@@ -86,11 +100,13 @@ export const signin = async (req, res, next) => {
 };
 
 export const signout = async (req, res) => {
+  res.clearCookie('token');
   res.status(200).json({
     success: true,
     message: "User signed out successfully",
   });
 };
+
 
 export const confirmEmail = async (req, res, next) => {
   try {
