@@ -58,6 +58,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  isEmailConfirmed: {
+    type: Boolean,
+    default: false
+  }
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

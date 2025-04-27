@@ -3,7 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/env.js";
 import mongoose from "mongoose";
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NDU2NjI1ODEsImV4cCI6MTc0ODI1NDU4MX0.E1eU9qm3XRIY1BLe8PlmiOK7fptxiuySGZzjZDGCksY
+import {sendConfirmationEmail} from "../utils/send-email.js";
+
 export const signup = async (req, res, next) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -22,20 +23,23 @@ export const signup = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // create user
-    const newUser = await User.create(
+    const users = await User.create(
       [{ email, password: hashedPassword, firstName, lastName }],
       { session }
     );
+    const newUser = users[0]; // Get the first (and only) user from the array
 
     // generate token
     const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, {
       expiresIn: JWT_EXPIRES_IN,
     });
 
+    // send email
+    await sendConfirmationEmail(newUser, token);
+
     await session.commitTransaction();
     session.endSession();
 
-    // send response
     res.status(201).json({
       success: true,
       message: "User created successfully",
@@ -50,40 +54,125 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
-        if (!user) {
-            const error = new Error("User not found");
-            error.statusCode = 404;
-            throw error;
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            const error = new Error("Invalid password");
-            error.statusCode = 401;
-            throw error;
-        }
-
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-            expiresIn: JWT_EXPIRES_IN,
-        });
-
-        res.status(200).json({
-            success: true,
-            message: "User Sign in successfully",
-            user,
-            token,
-        });
-    } catch (error) {
-        next(error);
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
     }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      const error = new Error("Invalid password");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRES_IN,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User Sign in successfully",
+      user,
+      token,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const signout = async (req, res) => {
-    res.status(200).json({
+  res.status(200).json({
+    success: true,
+    message: "User signed out successfully",
+  });
+};
+
+export const confirmEmail = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+
+    if (!token) {
+      const error = new Error("token is required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (user.isEmailConfirmed) {
+      return res.status(200).json({
         success: true,
-        message: "User signed out successfully"
+        message: "Email already confirmed",
+      });
+    }
+
+    user.isEmailConfirmed = true;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Email confirmed successfully",
     });
+  } catch (error) {
+    if (error.name === "JsonWebTokenError") {
+      error.message = "Invalid token";
+      error.statusCode = 400;
+    }
+    next(error);
+  }
+};
+
+// Add a resend confirmation email endpoint
+export const resendConfirmationEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      const error = new Error("Email is required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (user.isEmailConfirmed) {
+      return res.status(200).json({
+        success: true,
+        message: "Email already confirmed",
+      });
+    }
+
+    // Generate new confirmation token
+    const emailConfirmationToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    // Send confirmation email
+    await sendConfirmationEmail(user, emailConfirmationToken);
+
+    res.status(200).json({
+      success: true,
+      message: "Confirmation email sent successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
