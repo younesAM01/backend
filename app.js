@@ -10,6 +10,8 @@ import packRouter from "./routes/pack.routes.js";
 import clientPackRouter from "./routes/clientpack.routes.js";
 import sessionRouter from "./routes/session.routes.js";
 import servicesRouter from "./routes/services.routes.js";
+import couponRouter from "./routes/coupon.route.js";
+import reviewRouter from "./routes/review.route.js";
 const app = express();
 
 app.use(express.json());
@@ -21,6 +23,9 @@ app.use(
     credentials: true,
   })
 );
+
+app.use("/api/coupons", couponRouter);
+app.use("/api/reviews", reviewRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/packs", packRouter);
