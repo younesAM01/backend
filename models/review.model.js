@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const ReviewSchema = new mongoose.Schema({
   name: {
@@ -6,42 +6,42 @@ const ReviewSchema = new mongoose.Schema({
       type: String,
       required: true,
       trim: true,
-      default: ""
+      default: "",
     },
     ar: {
       type: String,
       required: true,
       trim: true,
-      default: ""
-    }
+      default: "",
+    },
   },
   trainerName: {
     en: {
       type: String,
       required: true,
       trim: true,
-      default: ""
+      default: "",
     },
     ar: {
       type: String,
       required: true,
       trim: true,
-      default: ""
-    }
+      default: "",
+    },
   },
   quote: {
     en: {
       type: String,
       required: false,
       trim: true,
-      default: ""
+      default: "",
     },
     ar: {
       type: String,
       required: false,
       trim: true,
-      default: ""
-    }
+      default: "",
+    },
   },
   rating: {
     type: Number,
@@ -53,24 +53,26 @@ const ReviewSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
+    default:
+      "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg",
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
   coachId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
-})
+    default: Date.now,
+  },
+});
 
 // Make sure we remove any existing model before creating a new one
 mongoose.models = {};
 
-export default mongoose.models.Review || mongoose.model('Review', ReviewSchema)
+export default mongoose.models.Review || mongoose.model("Review", ReviewSchema);

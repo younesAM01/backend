@@ -16,7 +16,7 @@ export const getUsers= async (req, res, next) => {
 export const getUserById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const user = await User.findById(id).select("-password");
+        const user = await User.findById(id)
         if (!user) {
             const error = new Error("User not found");
             error.statusCode = 404;
@@ -31,7 +31,22 @@ export const getUserById = async (req, res, next) => {
     }
 }
 
-export const updateUser = async (req, res, next) => {
+export const getUserBySupabaseId = async (req, res, next) => {
+    try {
+        const { supabaseId } = req.params;
+        const user = await User.findOne({ supabaseId });
+        if (!user) {
+            const error = new Error("User not found");
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({ user });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         
@@ -47,7 +62,11 @@ export const updateUser = async (req, res, next) => {
             user,
         });
     } catch (error) {
-        next(error);
+        res.status(500).json({
+            success: false,
+            message: "Error updating user",
+            error: error.message,
+        });
     }
 }
 
