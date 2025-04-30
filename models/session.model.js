@@ -17,6 +17,11 @@ const SessionSchema = new mongoose.Schema(
       ref: "Pack",
       required: [true, "Pack is required"],
     },
+    clientPack: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ClientPack",
+      required: [true, "Client pack is required"],
+    },
     sessionDate: {
       type: Date,
       required: [true, "Session date is required"],
@@ -33,14 +38,9 @@ const SessionSchema = new mongoose.Schema(
       type: Number, // Duration in minutes
       default: 60, // Default duration set to 1 hour (60 minutes)
     },
-    sessionStatus: {
-      type: String,
-      enum: ["finished", "upcoming", "pending"],
-      default: "upcoming",
-    },
     status: {
       type: String,
-      enum: ["scheduled", "completed", "canceled"],
+      enum: ["scheduled", "completed", "pending", "cancelled"],
       default: "scheduled",
     },
   },

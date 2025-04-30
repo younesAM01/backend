@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createSession, getAllSessions, getSessionById, updateSession, deleteSession } from "../controllers/session.controller.js";
+import { createSession, getAllSessions, getSessionById, updateSession, deleteSession, getSessionsByClientId, cancelSession, completeSession } from "../controllers/session.controller.js";
 
 const sessionRouter = Router();
 
@@ -9,7 +9,13 @@ sessionRouter.get("/", getAllSessions);
 
 sessionRouter.get("/:id", getSessionById);
 
+sessionRouter.get("/client/:id", getSessionsByClientId);
+
 sessionRouter.put("/:id", updateSession);
+
+sessionRouter.put("/cancel/:id", cancelSession);
+
+sessionRouter.put("/complete/:id", completeSession);
 
 sessionRouter.delete("/:id", deleteSession);
 

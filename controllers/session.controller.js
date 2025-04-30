@@ -1,6 +1,7 @@
 import Session from "../models/session.model.js";
 import { sendSessionNotifications } from "../utils/send-email.js";
 
+// Create session
 export const createSession = async (req, res) => {
   try {
     // Create the session
@@ -96,6 +97,24 @@ export const getSessionById = async (req, res) => {
   }
 };
 
+// Get sessions by client id
+export const getSessionsByClientId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sessions = await Session.find({ client: id });
+    res.status(200).json({
+      success: true,
+      message: "Sessions fetched successfully",
+      sessions,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // Update session
 export const updateSession = async (req, res) => {
   try {
@@ -122,7 +141,54 @@ export const updateSession = async (req, res) => {
   }
 };
 
-// Delete session
+// Cancel session
+export const cancelSession = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const session = await Session.findByIdAndUpdate(id, {status: "cancelled"});
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        message: `Session with this ${id} not found`,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Session cancelled successfully",
+      session,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Complete session
+export const completeSession = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const session = await Session.findByIdAndUpdate(id, { status: "completed" });
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        message: `Session with this ${id} not found`,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Session completed successfully",
+      session,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const deleteSession = async (req, res) => {
   try {
     const { id } = req.params;
