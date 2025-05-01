@@ -38,7 +38,7 @@ export const getAllClientPacks = async (req, res) => {
 export const getClientPackById = async (req, res) => {
   try {
     const { id } = req.params;
-    const clientPack = await ClientPack.findById(id).populate("pack");
+    const clientPack = await ClientPack.find({client: id}).populate("pack");
     if (!clientPack) {
       return res.status(404).json({
         success: false,
