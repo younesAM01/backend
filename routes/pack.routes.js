@@ -12,12 +12,12 @@ const packRouter = Router();
 
 packRouter.get("/", getAllPacks);
 
-packRouter.get("/:id",authorize, getPackById);
+packRouter.get("/:id", getPackById);
 
-packRouter.post("/", authorizeAdmin, createPack);
+packRouter.post("/", createPack);
 
-packRouter.put("/:id", authorizeAdmin, updatePack);
+packRouter.put("/:id", updatePack);
 
-packRouter.delete("/:id", authorizeAdmin, deletePack);
+packRouter.delete("/:id", deletePack);
 
 export default packRouter;

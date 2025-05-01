@@ -11,7 +11,7 @@ import {
 import { authorizeAdmin } from "../middlewares/auth.middleware.js";
 const userRouter = Router();
 
-userRouter.get("/", authorizeAdmin, getUsers);
+userRouter.get("/", getUsers);
 
 userRouter.get("/coach", getCoach);
 
@@ -24,5 +24,6 @@ userRouter.post("/", createUser);
 userRouter.put("/:id", updateUser);
 
 userRouter.delete("/:id", deleteUser);
+
 
 export default userRouter;

@@ -4,14 +4,14 @@ import { authorizeAdmin } from "../middlewares/auth.middleware.js";
 
 const servicesRouter = Router();
 
-servicesRouter.post("/",authorizeAdmin, createService);
+servicesRouter.post("/", createService);
 
 servicesRouter.get("/", getAllServices);
 
 servicesRouter.get("/:id" , getServiceById);
 
-servicesRouter.put("/:id", authorizeAdmin, updateService);
+servicesRouter.put("/:id",  updateService);
 
-servicesRouter.delete("/:id", authorizeAdmin, deleteService);
+servicesRouter.delete("/:id",  deleteService);
 
 export default servicesRouter;
