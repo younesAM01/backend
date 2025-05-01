@@ -6,7 +6,6 @@ export const getReviews = async (req, res) => {
     try {
         const id = req.query.id;
 
-        await connectMongoDB();
 
         if (id) {
             const review = await Review.findById(id)
@@ -51,7 +50,7 @@ export const createReview = async (req, res) => {
             return res.status(400).json({ success: false, error: "Rating, user ID, and coach ID are required fields" });
         }
 
-        await connectMongoDB();
+       
 
         const user = await User.findById(userId);
         const coach = await User.findById(coachId);
@@ -106,7 +105,7 @@ export const updateReview = async (req, res) => {
         const { name, trainerName, quote, rating, image } = req.body;
         const { id } = req.query;
 
-        await connectMongoDB();
+      
 
         const updateFields = {};
         
@@ -170,7 +169,7 @@ export const deleteReview = async (req, res) => {
             return res.status(400).json({ success: false, error: "Review ID is required" });
         }
 
-        await connectMongoDB();
+       
 
         const deletedReview = await Review.findByIdAndDelete(id);
 
