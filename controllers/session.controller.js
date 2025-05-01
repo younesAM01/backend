@@ -101,7 +101,28 @@ export const getSessionById = async (req, res) => {
 export const getSessionsByClientId = async (req, res) => {
   try {
     const { id } = req.params;
-    const sessions = await Session.find({ client: id });
+    const sessions = await Session.find({ client: id })
+      .populate("coach")
+      .populate("client")
+      .populate("pack");
+    res.status(200).json({
+      success: true,
+      message: "Sessions fetched successfully",
+      sessions,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Get sessions by coach id
+export const getSessionsByCoachId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sessions = await Session.find({ coach: id }).populate("coach").populate("client").populate("pack");
     res.status(200).json({
       success: true,
       message: "Sessions fetched successfully",
@@ -145,7 +166,9 @@ export const updateSession = async (req, res) => {
 export const cancelSession = async (req, res) => {
   try {
     const { id } = req.params;
-    const session = await Session.findByIdAndUpdate(id, {status: "cancelled"});
+    const session = await Session.findByIdAndUpdate(id, {
+      status: "cancelled",
+    });
     if (!session) {
       return res.status(404).json({
         success: false,
@@ -169,17 +192,29 @@ export const cancelSession = async (req, res) => {
 export const completeSession = async (req, res) => {
   try {
     const { id } = req.params;
-    const session = await Session.findByIdAndUpdate(id, { status: "completed" });
+    const session = await Session.findByIdAndUpdate(id, {
+      status: "completed",
+    });
     if (!session) {
       return res.status(404).json({
         success: false,
         message: `Session with this ${id} not found`,
       });
     }
+
+    // Fetch latest 6 completed sessions
+    const latestCompletedSessions = await Session.find({ status: "completed" })
+      .sort({ updatedAt: -1 })
+      .limit(6)
+      .populate("client")
+      .populate("coach")
+      .populate("pack");
+
     res.status(200).json({
       success: true,
       message: "Session completed successfully",
       session,
+      latestCompletedSessions,
     });
   } catch (error) {
     res.status(500).json({
