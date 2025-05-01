@@ -6,15 +6,18 @@ import {
   deleteUser,
   createUser,
   getUserBySupabaseId,
+  getCoach,
 } from "../controllers/user.controller.js";
 import { authorizeAdmin } from "../middlewares/auth.middleware.js";
 const userRouter = Router();
 
 userRouter.get("/", authorizeAdmin, getUsers);
 
-userRouter.get("/:id", getUserById);
+userRouter.get("/coach", getCoach);
 
 userRouter.get("/supabase/:supabaseId", getUserBySupabaseId);
+
+userRouter.get("/:id", getUserById);
 
 userRouter.post("/", createUser);
 
