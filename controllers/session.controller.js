@@ -100,6 +100,38 @@ export const getSessionById = async (req, res) => {
 export const updateSession = async (req, res) => {
   try {
     const { id } = req.params;
+    const { status, sessionStatus } = req.body;
+
+    // Synchronize status and sessionStatus
+    if (status) {
+      switch (status) {
+        case 'completed':
+          req.body.sessionStatus = 'finished';
+          break;
+        case 'scheduled':
+          req.body.sessionStatus = 'upcoming';
+          break;
+        case 'canceled':
+          req.body.sessionStatus = 'canceled';
+          break;
+      }
+    }
+
+    if (sessionStatus) {
+      switch (sessionStatus) {
+        case 'finished':
+          req.body.status = 'completed';
+          break;
+        case 'upcoming':
+        case 'pending':
+          req.body.status = 'scheduled';
+          break;
+        case 'canceled':
+          req.body.status = 'canceled';
+          break;
+      }
+    }
+
     const session = await Session.findByIdAndUpdate(id, req.body, {
       new: true,
     });

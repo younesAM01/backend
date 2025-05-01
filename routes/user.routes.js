@@ -9,14 +9,14 @@ import {
 import { authorize, authorizeAdmin } from "../middlewares/auth.middleware.js";
 const userRouter = Router();
 
-userRouter.get("/", authorizeAdmin, getUsers);
+userRouter.get("/", getUsers);
 
-userRouter.get("/:id", authorize, getUserById);
+userRouter.get("/:id",  getUserById);
 
 userRouter.post("/", createUser);
 
-userRouter.put("/:id", authorize, updateUser);
+userRouter.put("/:id",  updateUser);
 
-userRouter.delete("/:id", authorize, deleteUser);
+userRouter.delete("/:id",  deleteUser);
 
 export default userRouter;

@@ -32,5 +32,8 @@ const ServicesSchema = new mongoose.Schema({
   
 }, { timestamps: true });
 
+// Remove any existing indexes on description
+ServicesSchema.index({ 'description.en': 1 }, { unique: false });
+ServicesSchema.index({ 'description.ar': 1 }, { unique: false });
 
 export default mongoose.models.Services || mongoose.model('Services', ServicesSchema)
