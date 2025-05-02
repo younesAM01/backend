@@ -15,14 +15,26 @@ function generateSessionConfirmationTemplate(options) {
     month: "long",
     day: "numeric",
   });
+  
+  // Arabic date formatting
+  const arabicFormattedDate = sessionDate.toLocaleDateString("ar-SA", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   // Determine greeting and content based on recipient type
+  // For English
   let greeting, mainContent;
+  // For Arabic
+  let arabicGreeting, arabicMainContent;
 
   if (recipientType === "coach") {
+    // English content
     greeting = `Hello ${coach.firstName},`;
     mainContent = `
-        <p>You have a new session scheduled with ${client.firstName} .</p>
+        <p>You have a new session scheduled with ${client.firstName}.</p>
         <p>Email: ${client.email}</p>
         <h3>Session Details:</h3>
         <div class="session-details">
@@ -44,13 +56,38 @@ function generateSessionConfirmationTemplate(options) {
         </div>
         <p>Please be prepared and on time for this session. If you need to reschedule, please contact your client as soon as possible.</p>
       `;
+      
+    // Arabic content
+    arabicGreeting = `مرحباً ${coach.firstName}،`;
+    arabicMainContent = `
+        <p>لديك جلسة جديدة مجدولة مع ${client.firstName}.</p>
+        <p>البريد الإلكتروني: ${client.email}</p>
+        <h3>تفاصيل الجلسة:</h3>
+        <div class="session-details">
+          <ul style="list-style-type: none; padding-right: 0; margin: 0; text-align: right;">
+            <li><strong>التاريخ:</strong> ${arabicFormattedDate}</li>
+            <li><strong>الوقت:</strong> ${session.sessionTime}</li>
+            <li><strong>المكان:</strong> ${session.location}</li>
+            ${
+              session.duration
+                ? `<li><strong>المدة:</strong> ${session.duration}</li>`
+                : ""
+            }
+            ${
+              session.type
+                ? `<li><strong>النوع:</strong> ${session.type}</li>`
+                : ""
+            }
+          </ul>
+        </div>
+        <p>يرجى الاستعداد والحضور في الموعد المحدد. إذا كنت بحاجة إلى إعادة جدولة الجلسة، يرجى الاتصال بالعميل في أقرب وقت ممكن.</p>
+      `;
   } else {
     // client
+    // English content
     greeting = `Hello ${client.firstName},`;
     mainContent = `
-        <p>Your session with ${
-          coach.firstName
-        } has been scheduled successfully.</p>
+        <p>Your session with ${coach.firstName} has been scheduled successfully.</p>
         <p>Coach Email: ${coach.email}</p>
         
         <div class="session-details">
@@ -72,11 +109,37 @@ function generateSessionConfirmationTemplate(options) {
         </div>
         <p>We look forward to seeing you! If you need to reschedule, please contact us at least 24 hours in advance.</p>
       `;
+      
+    // Arabic content
+    arabicGreeting = `مرحباً ${client.firstName}،`;
+    arabicMainContent = `
+        <p>تم جدولة جلستك مع ${coach.firstName} بنجاح.</p>
+        <p>البريد الإلكتروني للمدرب: ${coach.email}</p>
+        
+        <div class="session-details">
+          <ul style="list-style-type: none; padding-right: 0; margin: 0; text-align: right;">
+            <li><strong>التاريخ:</strong> ${arabicFormattedDate}</li>
+            <li><strong>الوقت:</strong> ${session.sessionTime}</li>
+            <li><strong>المكان:</strong> ${session.location}</li>
+            ${
+              session.duration
+                ? `<li><strong>المدة:</strong> ${session.duration}</li>`
+                : ""
+            }
+            ${
+              session.type
+                ? `<li><strong>النوع:</strong> ${session.type}</li>`
+                : ""
+            }
+          </ul>
+        </div>
+        <p>نتطلع إلى رؤيتك! إذا كنت بحاجة إلى إعادة جدولة، يرجى الاتصال بنا قبل 24 ساعة على الأقل.</p>
+      `;
   }
 
-  // HTML Template with updated color scheme
+  // HTML Template with updated color scheme and bilingual content
   return `<!DOCTYPE html>
-  <html lang="en">
+  <html lang="ar-en">
   <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,19 +183,45 @@ function generateSessionConfirmationTemplate(options) {
           .content {
               padding: 0 15px;
           }
-          .content h2 {
+          .arabic-content {
+              direction: rtl;
+              text-align: right;
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              padding: 0 15px;
+              margin-bottom: 40px;
+          }
+          .english-content {
+              direction: ltr;
+              text-align: left;
+              border-top: 1px dashed #dddddd;
+              padding-top: 30px;
+              margin-top: 30px;
+          }
+          h2 {
               color: ${secondaryColor};
               font-size: 24px;
               font-weight: 600;
+              margin-bottom: 25px;
+          }
+          .arabic-title {
+              border-right: 4px solid ${primaryColor};
+              padding-right: 12px;
+              text-align: right;
+          }
+          .english-title {
               border-left: 4px solid ${primaryColor};
               padding-left: 12px;
-              margin-bottom: 25px;
           }
           .session-details {
               background: #f7f9fc;
               padding: 18px;
               border-radius: 6px;
               margin: 20px 0;
+          }
+          .arabic-content .session-details {
+              border-right: 4px solid ${primaryColor};
+          }
+          .english-content .session-details {
               border-left: 4px solid ${primaryColor};
           }
           .session-details ul li {
@@ -172,6 +261,27 @@ function generateSessionConfirmationTemplate(options) {
               border-top: 1px solid #eeeeee;
               margin-top: 30px;
           }
+          .language-divider {
+              text-align: center;
+              position: relative;
+              height: 30px;
+          }
+          .language-divider:before {
+              content: "";
+              position: absolute;
+              top: 50%;
+              left: 0;
+              right: 0;
+              border-top: 1px dashed #dddddd;
+          }
+          .language-divider span {
+              background-color: #ffffff;
+              position: relative;
+              display: inline-block;
+              padding: 0 15px;
+              color: #888;
+              font-size: 14px;
+          }
           @media only screen and (max-width: 480px) {
               .container {
                   width: 100%;
@@ -198,45 +308,53 @@ function generateSessionConfirmationTemplate(options) {
   <body>
       <div class="container">
           <div class="header">
-              <img src="${company.logoUrl}" alt="${
-    company.name
-  } Logo" class="logo">
-            
+              <img src="${company.logoUrl}" alt="${company.name} Logo" class="logo">
           </div>
           
-          <div class="content">
-              <h2>Session Confirmation</h2>
+          <!-- Arabic Content First -->
+          <div class="arabic-content">
+              <h2 class="arabic-title">تأكيد الجلسة</h2>
+              <p>${arabicGreeting}</p>
+              ${arabicMainContent}
+              
+              <div style="text-align: center; margin: 35px 0 15px;">
+                  <a href="${
+                    recipientType === "coach"
+                      ? `${process.env.DASHBOARD_URL || "https://example.com/dashboard"}`
+                      : `${process.env.CLIENT_PROFILE_URL || "https://example.com/profile"}`
+                  }" 
+                     class="button">
+                     ${recipientType === "coach" ? "عرض في لوحة التحكم" : "عرض في ملفك الشخصي"}
+                  </a>
+              </div>
+          </div>
+          
+          <div class="language-divider">
+              <span>English | العربية</span>
+          </div>
+          
+          <!-- English Content Second -->
+          <div class="english-content">
+              <h2 class="english-title">Session Confirmation</h2>
               <p>${greeting}</p>
               ${mainContent}
               
               <div style="text-align: center; margin: 35px 0 15px;">
                   <a href="${
                     recipientType === "coach"
-                      ? `${
-                          process.env.DASHBOARD_URL ||
-                          "https://example.com/dashboard"
-                        }/sessions`
-                      : `${
-                          process.env.CALENDAR_URL ||
-                          "https://example.com/calendar"
-                        }/add?date=${encodeURIComponent(
-                          formattedDate
-                        )}&time=${encodeURIComponent(session.time)}`
+                      ? `${process.env.DASHBOARD_URL || "https://example.com/dashboard"}`
+                      : `${process.env.CLIENT_PROFILE_URL || "https://example.com/profile"}`
                   }" 
                      class="button">
-                     ${
-                       recipientType === "coach"
-                         ? "View in Dashboard"
-                         : "View in your Profile"
-                     }
+                     ${recipientType === "coach" ? "View in Dashboard" : "View in your Profile"}
                   </a>
               </div>
           </div>
           
           <div class="footer">
-              <p>&copy; ${currentYear} ${company.name}. All rights reserved.</p>
+              <p>&copy; ${currentYear} ${company.name}. جميع الحقوق محفوظة | All rights reserved.</p>
               ${companyAddress ? `<p>${companyAddress}</p>` : ""}
-              <p>This is an automated message, please do not reply directly to this email.</p>
+              <p>هذه رسالة آلية، يرجى عدم الرد عليها مباشرة | This is an automated message, please do not reply directly to this email.</p>
           </div>
       </div>
   </body>
