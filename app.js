@@ -32,6 +32,7 @@ app.use("/api/packs", packRouter);
 app.use("/api/clientpacks", clientPackRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/services", servicesRouter);
+app.use("/api/coupons", couponRouter);
 
 app.use(errorHandler);
 

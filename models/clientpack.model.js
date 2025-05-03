@@ -15,6 +15,10 @@ const ClientPackSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Pack price is required"]
   },
+  finalPrice : {
+    type: Number,
+    required: [false, "Final price is required"]
+  },
   purchaseDate: {
     type: Date,
     default: Date.now

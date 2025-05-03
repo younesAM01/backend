@@ -5,7 +5,6 @@ export const getCoupons = async (req, res) => {
     try {
         const id = req.query.id;
 
-        await connectMongoDB();
 
         if (id) {
             const coupon = await Coupon.findById(id);
@@ -50,7 +49,6 @@ export const createCoupon = async (req, res) => {
             return res.status(400).json({ success: false, error: "Invalid expiry date" });
         }
 
-        await connectMongoDB();
 
         const newCoupon = await Coupon.create({
             name,
@@ -79,7 +77,6 @@ export const updateCoupon = async (req, res) => {
         const { name, percentage, expiryDate, status } = req.body;
         const { id } = req.query;
 
-        await connectMongoDB();
 
         const updateFields = {};
         if (name) updateFields.name = name;
@@ -131,7 +128,6 @@ export const deleteCoupon = async (req, res) => {
             return res.status(400).json({ success: false, error: "Coupon ID is required" });
         }
 
-        await connectMongoDB();
 
         const deletedCoupon = await Coupon.findByIdAndDelete(id);
 
