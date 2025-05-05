@@ -124,6 +124,10 @@ const UserSchema = new mongoose.Schema({
       required: false
     }
   },
+  coachnamearabic:{
+    type: String,
+    
+  },
   coachActive:{
     type: Boolean,
     default: false
