@@ -6,6 +6,7 @@ const PackSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Start price is required"],
     },
+
     category: {
       en: {
         type: String,
@@ -31,6 +32,9 @@ const PackSchema = new mongoose.Schema(
         expirationDays: {
           type: Number,
           required: [true, "Expiration days is required"],
+        },
+        upsell: {
+          type: Number,
         },
       },
     ],
