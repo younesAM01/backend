@@ -12,6 +12,7 @@ import sessionRouter from "./routes/session.routes.js";
 import servicesRouter from "./routes/services.routes.js";
 import couponRouter from "./routes/coupon.route.js";
 import reviewRouter from "./routes/review.route.js";
+
 const app = express();
 
 app.use(express.json());
@@ -39,7 +40,12 @@ app.get("/", (req, res) => {
   res.send("Backend is running");
 });
 
-app.listen(PORT, async () => {
-  console.log(`Server Backend is running on http://localhost:${PORT}`);
-  await connectDB();
-});
+// Only start the server if we're not in a serverless environment
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, async () => {
+    console.log(`Server Backend is running on http://localhost:${PORT}`);
+    await connectDB();
+  });
+}
+
+export default app;
