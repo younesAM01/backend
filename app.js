@@ -15,6 +15,7 @@ import reviewRouter from "./routes/review.route.js";
 
 const app = express();
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -27,6 +28,7 @@ app.use(
   })
 );
 
+// Routes
 app.use("/api/coupons", couponRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/auth", authRouter);
@@ -35,32 +37,34 @@ app.use("/api/packs", packRouter);
 app.use("/api/clientpacks", clientPackRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/services", servicesRouter);
-app.use("/api/coupons", couponRouter);
 
+// Error handling
 app.use(errorHandler);
 
-app.get("/", (req, res) => {
-  res.json({
-    status: 'success',
-    message: 'StayFit API is running',
-    environment: process.env.NODE_ENV || 'development'
-  });
+// Health check endpoint
+app.get("/", async (req, res) => {
+  try {
+    // Check database connection
+    const dbState = await connectDB();
+    res.json({
+      status: 'success',
+      message: 'StayFit API is running',
+      environment: process.env.NODE_ENV || 'development',
+      database: dbState ? 'connected' : 'disconnected'
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Database connection failed',
+      error: error.message
+    });
+  }
 });
 
-// For Vercel serverless functions
-if (process.env.NODE_ENV === 'production') {
-  // Connect to database when deployed
-  connectDB().catch(console.error);
-} else {
-  // Start the server in development
-  app.listen(PORT, async () => {
-    try {
-      await connectDB();
-      console.log(`Server Backend is running on http://localhost:${PORT}`);
-    } catch (error) {
-      console.error('Failed to start server:', error);
-      process.exit(1);
-    }
+// Development server
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server Backend is running on http://localhost:${PORT}`);
   });
 }
 
