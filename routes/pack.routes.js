@@ -6,7 +6,6 @@ import {
   updatePack,
   deletePack,
 } from "../controllers/pack.controller.js";
-import { authorize, authorizeAdmin } from "../middlewares/auth.middleware.js";
 
 const packRouter = Router();
 
