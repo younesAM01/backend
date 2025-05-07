@@ -46,17 +46,23 @@ app.get("/", async (req, res) => {
   try {
     // Check database connection
     const dbState = await connectDB();
+    if (!dbState) {
+      throw new Error("Database connection failed");
+    }
+    
     res.json({
       status: 'success',
       message: 'StayFit API is running',
       environment: process.env.NODE_ENV || 'development',
-      database: dbState ? 'connected' : 'disconnected'
+      database: 'connected'
     });
   } catch (error) {
+    console.error('Health check failed:', error);
     res.status(500).json({
       status: 'error',
       message: 'Database connection failed',
-      error: error.message
+      error: error.message,
+      environment: process.env.NODE_ENV || 'development'
     });
   }
 });
