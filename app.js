@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000", // your Next.js domain
+    origin: "*", // Allow all origins during development
     credentials: true,
   })
 );
