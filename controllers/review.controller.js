@@ -63,8 +63,8 @@ export const createReview = async (req, res) => {
                 ar: `${user.firstName} ${user.lastName}`
             },
             trainerName: {
-                en: `${coach.firstName} ${coach.lastName}`,
-                ar: `${coach.firstName} ${coach.lastName}`
+                en: `${coach.firstName} `,
+                ar: `${coach.coachnamearabic} `
             },
             quote: { en: "", ar: "" },
             rating,
