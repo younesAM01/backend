@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createService, getAllServices, getServiceById, updateService, deleteService } from "../controllers/services.controller.js";
-import { authorizeAdmin } from "../middlewares/auth.middleware.js";
+
 
 const servicesRouter = Router();
 
