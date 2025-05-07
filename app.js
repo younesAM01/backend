@@ -12,23 +12,18 @@ import sessionRouter from "./routes/session.routes.js";
 import servicesRouter from "./routes/services.routes.js";
 import couponRouter from "./routes/coupon.route.js";
 import reviewRouter from "./routes/review.route.js";
-
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? ['http://localhost:3000'] // Allow local frontend during development
-      : 'http://localhost:3000',
+    origin: "http://localhost:3000", // your Next.js domain
     credentials: true,
   })
 );
 
-// Routes
 app.use("/api/coupons", couponRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/auth", authRouter);
@@ -37,41 +32,15 @@ app.use("/api/packs", packRouter);
 app.use("/api/clientpacks", clientPackRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/services", servicesRouter);
+app.use("/api/coupons", couponRouter);
 
-// Error handling
 app.use(errorHandler);
 
-// Health check endpoint
-app.get("/", async (req, res) => {
-  try {
-    // Check database connection
-    const dbState = await connectDB();
-    if (!dbState) {
-      throw new Error("Database connection failed");
-    }
-    
-    res.json({
-      status: 'success',
-      message: 'StayFit API is running',
-      environment: process.env.NODE_ENV || 'development',
-      database: 'connected'
-    });
-  } catch (error) {
-    console.error('Health check failed:', error);
-    res.status(500).json({
-      status: 'error',
-      message: 'Database connection failed',
-      error: error.message,
-      environment: process.env.NODE_ENV || 'development'
-    });
-  }
+app.get("/", (req, res) => {
+  res.send("Backend is running");
 });
 
-// Development server
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`Server Backend is running on http://localhost:${PORT}`);
-  });
-}
-
-export default app;
+app.listen(PORT, async () => {
+  console.log(`Server Backend is running on http://localhost:${PORT}`);
+  await connectDB();
+});
