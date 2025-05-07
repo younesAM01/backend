@@ -12,6 +12,7 @@ import sessionRouter from "./routes/session.routes.js";
 import servicesRouter from "./routes/services.routes.js";
 import couponRouter from "./routes/coupon.route.js";
 import reviewRouter from "./routes/review.route.js";
+
 const app = express();
 
 app.use(express.json());
@@ -19,7 +20,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000", // your Next.js domain
+    origin: process.env.NODE_ENV === 'production' 
+      ? ['http://localhost:3000'] // Allow local frontend during development
+      : 'http://localhost:3000',
     credentials: true,
   })
 );
@@ -37,10 +40,28 @@ app.use("/api/coupons", couponRouter);
 app.use(errorHandler);
 
 app.get("/", (req, res) => {
-  res.send("Backend is running");
+  res.json({
+    status: 'success',
+    message: 'StayFit API is running',
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
-app.listen(PORT, async () => {
-  console.log(`Server Backend is running on http://localhost:${PORT}`);
-  await connectDB();
-});
+// For Vercel serverless functions
+if (process.env.NODE_ENV === 'production') {
+  // Connect to database when deployed
+  connectDB().catch(console.error);
+} else {
+  // Start the server in development
+  app.listen(PORT, async () => {
+    try {
+      await connectDB();
+      console.log(`Server Backend is running on http://localhost:${PORT}`);
+    } catch (error) {
+      console.error('Failed to start server:', error);
+      process.exit(1);
+    }
+  });
+}
+
+export default app;
