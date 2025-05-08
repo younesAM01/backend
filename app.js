@@ -34,6 +34,21 @@ app.use(
   })
 );
 
+// Middleware to ensure DB connection
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('Database connection error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Database connection error',
+      details: error.message 
+    });
+  }
+});
+
 // Add a test route to check if the server is running
 app.get("/test", (req, res) => {
   res.json({ message: "Server is running" });
