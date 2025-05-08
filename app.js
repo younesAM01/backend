@@ -15,6 +15,15 @@ import reviewRouter from "./routes/review.route.js";
 
 const app = express();
 
+// Add error handling for uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+});
+
+process.on('unhandledRejection', (error) => {
+  console.error('Unhandled Rejection:', error);
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -24,6 +33,11 @@ app.use(
     credentials: true,
   })
 );
+
+// Add a test route to check if the server is running
+app.get("/test", (req, res) => {
+  res.json({ message: "Server is running" });
+});
 
 app.use("/api/coupons", couponRouter);
 app.use("/api/reviews", reviewRouter);
@@ -44,7 +58,12 @@ app.get("/", (req, res) => {
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, async () => {
     console.log(`Server Backend is running on http://localhost:${PORT}`);
-    await connectDB();
+    try {
+      await connectDB();
+      console.log('Database connected successfully');
+    } catch (error) {
+      console.error('Database connection error:', error);
+    }
   });
 }
 
