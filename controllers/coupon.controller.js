@@ -1,28 +1,41 @@
 import Coupon from '../models/coupon.model.js';
+import connectDB from '../database/mongodb.js';
 
 // GET all coupons or a single coupon by ID
 export const getCoupons = async (req, res) => {
     try {
+        // Ensure database connection
+        await connectDB();
+        
         const id = req.query.id;
 
-
         if (id) {
-            const coupon = await Coupon.findById(id);
+            const coupon = await Coupon.findById(id).lean();
             if (!coupon) {
                 return res.status(404).json({ success: false, error: "Coupon not found" });
             }
             return res.json({ success: true, data: coupon });
         }
 
-        const coupons = await Coupon.find({}).sort({ createdAt: -1 });
+        const coupons = await Coupon.find({}).sort({ createdAt: -1 }).lean();
 
-        const updatedCoupons = await Promise.all(coupons.map(async (coupon) => {
+        const updatedCoupons = coupons.map(coupon => {
             if (coupon.expiryDate < new Date() && coupon.status !== 'expired') {
-                coupon.status = 'expired';
-                await coupon.save();
+                return { ...coupon, status: 'expired' };
             }
             return coupon;
-        }));
+        });
+
+        // Update expired coupons in the background
+        if (updatedCoupons.some(coupon => coupon.status === 'expired')) {
+            Promise.all(
+                updatedCoupons
+                    .filter(coupon => coupon.status === 'expired')
+                    .map(coupon => 
+                        Coupon.findByIdAndUpdate(coupon._id, { status: 'expired' }, { new: true })
+                    )
+            ).catch(console.error);
+        }
 
         res.json({ success: true, data: updatedCoupons });
     } catch (error) {

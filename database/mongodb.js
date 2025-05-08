@@ -20,16 +20,18 @@ const connectDB = async () => {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      maxPoolSize: 1, // Reduce pool size for serverless
+      maxPoolSize: 1,
       minPoolSize: 0,
-      serverSelectionTimeoutMS: 3000, // Faster timeout
-      socketTimeoutMS: 30000,
-      connectTimeoutMS: 3000,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 10000,
       family: 4,
       retryWrites: true,
       retryReads: true,
       maxIdleTimeMS: 10000,
       heartbeatFrequencyMS: 1000,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     };
 
     mongoose.set('strictQuery', false);
@@ -81,5 +83,7 @@ process.on('SIGINT', async () => {
   }
 });
 
+// Export both the connection function and the mongoose instance
+export { mongoose };
 export default connectDB;
 
