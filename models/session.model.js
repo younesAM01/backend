@@ -44,6 +44,10 @@ const SessionSchema = new mongoose.Schema(
       enum: ["scheduled", "completed", "pending", "cancelled"],
       default: "scheduled",
     },
+    freeSession: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
