@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "*", // Allow all origins during development
+    origin: "https://stayfit.sa", // Allow all origins during development
     credentials: true,
   })
 );
