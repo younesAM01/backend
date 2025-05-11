@@ -53,6 +53,7 @@ function generateFreeSessionRequestTemplate(options) {
           <li><strong>Email:</strong> ${userData.email}</li>
           <li><strong>Phone:</strong> ${userData.phone}</li>
           <li><strong>City:</strong> ${userData.city}</li>
+          <li><strong>Session Location:</strong> ${userData.location}</li>
           <li><strong>Preferred Date:</strong> ${formattedDate}</li>
           <li><strong>Preferred Time Range:</strong> ${userData.timeRange}</li>
           <li><strong>Request Received:</strong> ${receivedDate} at ${receivedTime}</li>
@@ -77,6 +78,7 @@ function generateFreeSessionRequestTemplate(options) {
           <li><strong>البريد الإلكتروني:</strong> ${userData.email}</li>
           <li><strong>الهاتف:</strong> ${userData.phone}</li>
           <li><strong>المدينة:</strong> ${userData.city}</li>
+          <li><strong>موقع الجلسة:</strong> ${userData.location}</li>
           <li><strong>التاريخ المفضل:</strong> ${arabicFormattedDate}</li>
           <li><strong>النطاق الزمني المفضل:</strong> ${userData.timeRange}</li>
           <li><strong>تم استلام الطلب:</strong> ${receivedDate} في ${receivedTime}</li>
