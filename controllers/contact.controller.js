@@ -103,6 +103,7 @@ export async function handleFreeSessionRequest(req, res) {
   try {
     const userData = {
       city: req.body.city,
+      location: req.body.location,
       date: req.body.date,
       email: req.body.email,
       name: req.body.name,
