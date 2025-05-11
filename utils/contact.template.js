@@ -1,21 +1,11 @@
-function generateFreeSessionRequestTemplate(options) {
-    const { userData, company } = options;
+function generateContactFormTemplate(options) {
+    const { formData, company } = options;
   
     // Set brand colors
     const primaryColor = "#B4E90E"; // Bright lime green
     const secondaryColor = "#0D111A"; // Dark blue-black
     const companyAddress = company?.address || "";
     const currentYear = new Date().getFullYear();
-  
-    // Format date from YYYY-MM-DD to localized format
-    const requestDate = new Date(userData.date);
-    const formattedDate = requestDate.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    
   
     // Format current date and time
     const currentDate = new Date();
@@ -33,51 +23,57 @@ function generateFreeSessionRequestTemplate(options) {
     // English content
     const mainContent = `
       <div class="alert">
-        <p>A new free session request has been received!</p>
+        <p>A new contact form submission has been received!</p>
       </div>
       
       <p>Hello Admin,</p>
-      <p>You have received a new free session request from <strong>${userData.name}</strong>. Please review the details below and contact the client to schedule their session.</p>
+      <p>You have received a new message from <strong>${formData.firstName} ${formData.lastName}</strong>. Please review the details below and respond to the inquiry as soon as possible.</p>
       
-      <h3>Request Details:</h3>
-      <div class="request-details">
+      <h3>Contact Details:</h3>
+      <div class="contact-details">
         <ul style="list-style-type: none; padding-left: 0; margin: 0;">
-          <li><strong>Name:</strong> ${userData.name}</li>
-          <li><strong>Email:</strong> ${userData.email}</li>
-          <li><strong>Phone:</strong> ${userData.phone}</li>
-          <li><strong>City:</strong> ${userData.city}</li>
-          <li><strong>Session Location:</strong> ${userData.location}</li>
-          <li><strong>Preferred Date:</strong> ${formattedDate}</li>
-          <li><strong>Preferred Time Range:</strong> ${userData.timeRange}</li>
-          <li><strong>Request Received:</strong> ${receivedDate} at ${receivedTime}</li>
+          <li><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</li>
+          <li><strong>Email:</strong> ${formData.email}</li>
+          <li><strong>Subject:</strong> ${formData.subject}</li>
+          <li><strong>Received:</strong> ${receivedDate} at ${receivedTime}</li>
         </ul>
       </div>
-      <p>Remember to follow up with this client within 24 hours to maintain high customer satisfaction.</p>
+  
+      <h3>Message:</h3>
+      <div class="message-content">
+        <p>${formData.message.replace(/\n/g, '<br>')}</p>
+      </div>
+      
+      <p>${formData.acceptTerms ? 'The sender has accepted the terms and conditions.' : ''}</p>
+      <p>Remember to respond to this inquiry within 24 hours to maintain high customer satisfaction.</p>
     `;
       
     // Arabic content
     const arabicMainContent = `
       <div class="alert">
-        <p>تم استلام طلب جلسة مجانية جديد!</p>
+        <p>تم استلام رسالة جديدة من نموذج الاتصال!</p>
       </div>
       
       <p>مرحباً المسؤول،</p>
-      <p>لقد تلقيت طلب جلسة مجانية جديد من <strong>${userData.name}</strong>. يرجى مراجعة التفاصيل أدناه والاتصال بالعميل لجدولة جلسته.</p>
+      <p>لقد تلقيت رسالة جديدة من <strong>${formData.firstName} ${formData.lastName}</strong>. يرجى مراجعة التفاصيل أدناه والرد على الاستفسار في أقرب وقت ممكن.</p>
       
-      <h3>تفاصيل الطلب:</h3>
-      <div class="request-details">
+      <h3>تفاصيل الاتصال:</h3>
+      <div class="contact-details">
         <ul style="list-style-type: none; padding-right: 0; margin: 0; text-align: right;">
-          <li><strong>الاسم:</strong> ${userData.name}</li>
-          <li><strong>البريد الإلكتروني:</strong> ${userData.email}</li>
-          <li><strong>الهاتف:</strong> ${userData.phone}</li>
-          <li><strong>المدينة:</strong> ${userData.city}</li>
-          <li><strong>موقع الجلسة:</strong> ${userData.location}</li>
-          <li><strong>التاريخ المفضل:</strong> ${formattedDate}</li>
-          <li><strong>النطاق الزمني المفضل:</strong> ${userData.timeRange}</li>
-          <li><strong>تم استلام الطلب:</strong> ${receivedDate} في ${receivedTime}</li>
+          <li><strong>الاسم:</strong> ${formData.firstName} ${formData.lastName}</li>
+          <li><strong>البريد الإلكتروني:</strong> ${formData.email}</li>
+          <li><strong>الموضوع:</strong> ${formData.subject}</li>
+          <li><strong>تم الاستلام:</strong> ${receivedDate} في ${receivedTime}</li>
         </ul>
       </div>
-      <p>تذكر متابعة هذا العميل في غضون 24 ساعة للحفاظ على مستوى عالٍ من رضا العملاء.</p>
+  
+      <h3>الرسالة:</h3>
+      <div class="message-content">
+        <p>${formData.message.replace(/\n/g, '<br>')}</p>
+      </div>
+      
+      <p>${formData.acceptTerms ? 'وافق المرسل على الشروط والأحكام.' : ''}</p>
+      <p>تذكر الرد على هذا الاستفسار في غضون 24 ساعة للحفاظ على مستوى عالٍ من رضا العملاء.</p>
     `;
   
     // HTML Template
@@ -155,11 +151,14 @@ function generateFreeSessionRequestTemplate(options) {
                 border-left: 4px solid ${primaryColor};
                 padding-left: 12px;
             }
-            .request-details {
+            .contact-details, .message-content {
                 background: #f7f9fc;
                 padding: 18px;
                 border-radius: 6px;
                 margin: 20px 0;
+            }
+            .message-content {
+                background: #f0f5ff;
             }
             .alert {
                 background-color: #FFF8E1;
@@ -173,21 +172,21 @@ function generateFreeSessionRequestTemplate(options) {
                 border-left: none;
                 text-align: right;
             }
-            .arabic-content .request-details {
+            .arabic-content .contact-details, .arabic-content .message-content {
                 border-right: 4px solid ${primaryColor};
                 border-left: none;
             }
-            .english-content .request-details {
+            .english-content .contact-details, .english-content .message-content {
                 border-left: 4px solid ${primaryColor};
                 border-right: none;
             }
-            .request-details ul li {
+            .contact-details ul li {
                 margin-bottom: 8px;
             }
-            .request-details ul li:last-child {
+            .contact-details ul li:last-child {
                 margin-bottom: 0;
             }
-            .request-details ul li strong {
+            .contact-details ul li strong {
                 color: ${secondaryColor};
                 font-weight: 600;
             }
@@ -266,12 +265,12 @@ function generateFreeSessionRequestTemplate(options) {
         <div class="container">
             <div class="header">
                 <img src="${company?.logoUrl || 'https://example.com/logo.png'}" alt="${company?.name || 'STAY FIT'} Logo" class="logo">
-                <h1>STAY FIT</h1>
+                <h1>${company?.name || 'STAY FIT'}</h1>
             </div>
             
             <!-- Arabic Content First -->
             <div class="arabic-content">
-                <h2 class="arabic-title">طلب جلسة مجانية جديد</h2>
+                <h2 class="arabic-title">رسالة اتصال جديدة</h2>
                 ${arabicMainContent}                             
             </div>
             
@@ -281,9 +280,10 @@ function generateFreeSessionRequestTemplate(options) {
             
             <!-- English Content Second -->
             <div class="english-content">
-                <h2 class="english-title">New Free Session Request</h2>
+                <h2 class="english-title">New Contact Message</h2>
                 ${mainContent}
                 
+               
             </div>
             
             <div class="footer">
@@ -296,24 +296,6 @@ function generateFreeSessionRequestTemplate(options) {
     </html>`;
   }
   
-  // Example usage:
-  /* 
-  const template = generateFreeSessionRequestTemplate({
-    userData: {
-      city: "مدينة",
-      date: "2025-05-21",
-      email: "lonag95148@exitings.com",
-      name: "John Doe",
-      phone: "0123456",
-      timeRange: "16-20"
-    },
-    company: {
-      name: "STAY FIT",
-      logoUrl: "https://example.com/logo.png",
-      dashboardUrl: "https://example.com/dashboard",
-      address: "123 Fitness Ave, Health City"
-    }
-  });
-  */
+
   
-  export { generateFreeSessionRequestTemplate };
+  export { generateContactFormTemplate };
