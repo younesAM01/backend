@@ -37,9 +37,6 @@ export async function sendFreeSessionRequestEmail(userData, options = {}) {
     // Send email
     const info = await transporter.sendMail(mailOptions);
     
-    console.log("Free session request email sent successfully!");
-    console.log("Message ID:", info.messageId);
-    
     return {
       success: true,
       messageId: info.messageId

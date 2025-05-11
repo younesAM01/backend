@@ -17,12 +17,12 @@ function generateFreeSessionRequestTemplate(options) {
     });
     
     // Arabic date formatting
-    const arabicFormattedDate = requestDate.toLocaleDateString("ar-SA", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    // const arabicFormattedDate = requestDate.toLocaleDateString("ar-SA", {
+    //   weekday: "long",
+    //   year: "numeric",
+    //   month: "long",
+    //   day: "numeric",
+    // });
   
     // Format current date and time
     const currentDate = new Date();
@@ -79,7 +79,7 @@ function generateFreeSessionRequestTemplate(options) {
           <li><strong>الهاتف:</strong> ${userData.phone}</li>
           <li><strong>المدينة:</strong> ${userData.city}</li>
           <li><strong>موقع الجلسة:</strong> ${userData.location}</li>
-          <li><strong>التاريخ المفضل:</strong> ${arabicFormattedDate}</li>
+          <li><strong>التاريخ المفضل:</strong> ${formattedDate}</li>
           <li><strong>النطاق الزمني المفضل:</strong> ${userData.timeRange}</li>
           <li><strong>تم استلام الطلب:</strong> ${receivedDate} في ${receivedTime}</li>
         </ul>
