@@ -1,8 +1,9 @@
-// import { Router } from "express";
-// import contactController from "../controllers/contact.controller.js";
+import { Router } from "express";
+import contactController, { handleFreeSessionRequest } from "../controllers/contact.controller.js";
 
-// const contactRouter = Router();
+const contactRouter = Router();
 
-// contactRouter.post('/', contactController.sendContactEmail)
+contactRouter.post("/", contactController.sendContactEmail);
+contactRouter.post("/free-session", handleFreeSessionRequest);
 
-// export default contactRouter
+export default contactRouter;
