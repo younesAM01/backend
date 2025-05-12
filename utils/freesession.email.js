@@ -1,6 +1,6 @@
 // services/emailService.js
 import transporter from "../config/nodemailer.js";
-import { COMPANY_ADDRESS, COMPANY_LOGO, EMAIL_COMPANY_FROM, EMAIL_COMPANY_NAME } from "../config/env.js";
+import { COMPANY_ADDRESS, COMPANY_LOGO, DASHBOARD_URL, EMAIL_COMPANY_FROM, EMAIL_COMPANY_NAME } from "../config/env.js";
 import { generateFreeSessionRequestTemplate } from "./freesession.template.js";
 
 /**

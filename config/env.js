@@ -16,4 +16,5 @@ export const {
   COMPANY_ADDRESS,
   PRIMARY_COLOR,
   BACKEND_URL,
+  DASHBOARD_URL,
 } = process.env;
