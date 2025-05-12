@@ -12,6 +12,7 @@ import sessionRouter from "./routes/session.routes.js";
 import servicesRouter from "./routes/services.routes.js";
 import couponRouter from "./routes/coupon.route.js";
 import reviewRouter from "./routes/review.route.js";
+import contactRouter from "./routes/contact.routes.js";
 const app = express();
 
 app.use(express.json());
@@ -32,6 +33,8 @@ app.use("/api/packs", packRouter);
 app.use("/api/clientpacks", clientPackRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/services", servicesRouter);
+app.use("/api/contact", contactRouter);
+
 
 app.use(errorHandler);
 
