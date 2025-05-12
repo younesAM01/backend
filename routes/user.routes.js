@@ -8,7 +8,6 @@ import {
   getUserBySupabaseId,
   getCoach,
 } from "../controllers/user.controller.js";
-import { authorizeAdmin } from "../middlewares/auth.middleware.js";
 const userRouter = Router();
 
 userRouter.get("/", getUsers);

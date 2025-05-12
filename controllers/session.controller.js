@@ -1,4 +1,4 @@
-import Session from "../models/session.model.js";
+import Session from "../../../Stayfit-Backend/models/session.model.js";
 import { sendSessionNotifications } from "../utils/send-email.js";
 
 // Create session

@@ -1,12 +1,12 @@
 import generateEmailConfirmationTemplate from "./email-templait.js";
-import transporter from "../config/nodemailer.js";
+import transporter from "../../../Stayfit-Backend/config/nodemailer.js";
 import {
   COMPANY_LOGO,
   COMPANY_ADDRESS,
   PRIMARY_COLOR,
   EMAIL_COMPANY_FROM,
   EMAIL_COMPANY_NAME,
-} from "../config/env.js";
+} from "../../../Stayfit-Backend/config/env.js";
 import { generateSessionConfirmationTemplate } from "./sessionemail.template.js";
 
 // Function to send confirmation email
