@@ -1,5 +1,6 @@
 import Session from "../models/session.model.js";
 import { sendSessionNotifications } from "../utils/send-email.js";
+import ClientPack from "../models/clientpack.model.js"; // Add this import
 
 // Create session
 export const createSession = async (req, res) => {
@@ -12,6 +13,15 @@ export const createSession = async (req, res) => {
         success: false,
         message: "Session not created",
       });
+    }
+
+    // Update client pack remaining sessions
+    if (req.body.clientPack) {
+      const clientPack = await ClientPack.findById(req.body.clientPack);
+      if (clientPack && clientPack.remainingSessions > 0) {
+        clientPack.remainingSessions -= 1;
+        await clientPack.save();
+      }
     }
 
     // Fetch coach and client details to include in emails
@@ -122,7 +132,10 @@ export const getSessionsByClientId = async (req, res) => {
 export const getSessionsByCoachId = async (req, res) => {
   try {
     const { id } = req.params;
-    const sessions = await Session.find({ coach: id }).populate("coach").populate("client").populate("pack");
+    const sessions = await Session.find({ coach: id })
+      .populate("coach")
+      .populate("client")
+      .populate("pack");
     res.status(200).json({
       success: true,
       message: "Sessions fetched successfully",
@@ -145,29 +158,29 @@ export const updateSession = async (req, res) => {
     // Synchronize status and sessionStatus
     if (status) {
       switch (status) {
-        case 'completed':
-          req.body.sessionStatus = 'finished';
+        case "completed":
+          req.body.sessionStatus = "finished";
           break;
-        case 'scheduled':
-          req.body.sessionStatus = 'upcoming';
+        case "scheduled":
+          req.body.sessionStatus = "upcoming";
           break;
-        case 'canceled':
-          req.body.sessionStatus = 'canceled';
+        case "canceled":
+          req.body.sessionStatus = "canceled";
           break;
       }
     }
 
     if (sessionStatus) {
       switch (sessionStatus) {
-        case 'finished':
-          req.body.status = 'completed';
+        case "finished":
+          req.body.status = "completed";
           break;
-        case 'upcoming':
-        case 'pending':
-          req.body.status = 'scheduled';
+        case "upcoming":
+        case "pending":
+          req.body.status = "scheduled";
           break;
-        case 'canceled':
-          req.body.status = 'canceled';
+        case "canceled":
+          req.body.status = "canceled";
           break;
       }
     }
@@ -198,18 +211,31 @@ export const updateSession = async (req, res) => {
 export const cancelSession = async (req, res) => {
   try {
     const { id } = req.params;
-    const session = await Session.findByIdAndUpdate(id, {
-      status: "cancelled",
-    });
+    const session = await Session.findById(id);
+
     if (!session) {
       return res.status(404).json({
         success: false,
         message: `Session with this ${id} not found`,
       });
     }
+
+    // Update the session status
+    session.status = "cancelled";
+    await session.save();
+
+    // Increase remaining sessions in client pack if it exists
+    if (session.clientPack) {
+      const clientPack = await ClientPack.findById(session.clientPack);
+      if (clientPack) {
+        clientPack.remainingSessions += 1;
+        await clientPack.save();
+      }
+    }
+
     res.status(200).json({
       success: true,
-      message: "Session cancelled successfully",
+      message: "Session cancelled successfully and remaining sessions updated",
       session,
     });
   } catch (error) {

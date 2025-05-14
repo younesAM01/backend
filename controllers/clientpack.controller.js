@@ -69,7 +69,7 @@ export const getClientPackByClientId = async (req, res) => {
       const expirationDate = new Date(clientPack.expirationDate);
       return (
         clientPack.purchaseState === "completed" && 
-        clientPack.remainingSessions > 0 && 
+        clientPack.remainingSessions >= 0 && 
         expirationDate > currentDate
       );
     });
