@@ -17,5 +17,10 @@ export const {
   PRIMARY_COLOR,
   BACKEND_URL,
   RESEND_API_KEY,
-  DASHBOARD_URL
+  DASHBOARD_URL,
+  PAYLINK_API_KEY,
+  PAYLINK_SECRET_KEY,
+  PAYLINK_BASE_URL,
+  callBackUrl,
+  cancelUrl,
 } = process.env;
