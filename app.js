@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000", // your Next.js domain
+    origin: "https://stayfit.sa/en",
     credentials: true,
   })
 );
