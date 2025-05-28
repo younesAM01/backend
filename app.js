@@ -13,6 +13,7 @@ import servicesRouter from "./routes/services.routes.js";
 import couponRouter from "./routes/coupon.route.js";
 import reviewRouter from "./routes/review.route.js";
 import contactRouter from "./routes/contact.routes.js";
+import paylinkRouter from "./routes/paylink.routes.js";
 const app = express();
 
 app.use(express.json());
@@ -20,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://stayfit.sa", // Allow all origins during development
+    origin: "http://localhost:3000", // your Next.js domain
     credentials: true,
   })
 );
@@ -33,8 +34,9 @@ app.use("/api/packs", packRouter);
 app.use("/api/clientpacks", clientPackRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/services", servicesRouter);
+app.use("/api/coupons", couponRouter);
 app.use("/api/contact", contactRouter);
-
+app.use("/api/paylink", paylinkRouter);
 
 app.use(errorHandler);
 

@@ -33,7 +33,7 @@ const ClientPackSchema = new mongoose.Schema({
   },
   purchaseState: {
     type: String,
-    enum: ['completed', 'pending' , 'cancelled'],
+    enum: ['completed', 'pending' , 'canceled'],
     default: 'pending',
   },
   isActive: {
