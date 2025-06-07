@@ -134,12 +134,12 @@ const UserSchema = new mongoose.Schema(
     availableTime: {
       startTime: {
         type: String,
-        default: "08:00",
+        default: "06:00",
         validate: {
           validator: function (v) {
             return /^([0-1][0-9]|2[0-2]):[0-5][0-9]$/.test(v);
           },
-          message: "Start time must be in HH:MM format (08-22)",
+          message: "Start time must be in HH:MM format (06-22)",
         },
       },
       endTime: {
@@ -149,7 +149,7 @@ const UserSchema = new mongoose.Schema(
           validator: function (v) {
             return /^([0-1][0-9]|2[0-2]):[0-5][0-9]$/.test(v);
           },
-          message: "End time must be in HH:MM format (08-22)",
+          message: "End time must be in HH:MM format (06-22)",
         },
       },
     },
